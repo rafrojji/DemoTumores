@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>1. Cargar imagen médica</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo"></span> NeuroFlow Hospital IA</div>
+  <nav class="nav">
+    <a href="index.html">Inicio</a>
+    <a href="modelo.html">Modelo</a>
+    <a href="diagnostico.html">Reporte</a>
+  </nav>
+</header>
+<main class="main">
+<nav class="flow"><a href="index.html" class="active">1. Cargar imagen</a>
+<a href="extraccion.html">2. Extraer datos</a>
+<a href="modelo.html">3. Modelo IA</a>
+<a href="clasificacion.html">4. Clasificación</a>
+<a href="revision.html">5. Revisión médica</a>
+<a href="diagnostico.html">6. Diagnóstico</a></nav>
+<section class="hero">
+  <div>
+    <span class="badge">Paso 1 · Imagen médica</span>
+    <h1>Cargar imagen cerebral del paciente</h1>
+    <p class="lead">Simula el ingreso de una resonancia o imagen cerebral al sistema hospitalario. El archivo se procesa localmente en el navegador.</p>
+    <p class="note">Este demo no hace diagnóstico real. Simula el flujo de un sistema de apoyo a la decisión usando los resultados del proyecto en Python.</p>
+  </div>
+  <div class="panel">
+    <h2>Datos del caso</h2>
+    <div class="formGrid">
+      <div><label>ID caso</label><input id="caseId" value="TEC-G4-001"></div>
+      <div><label>Paciente</label><input id="patient" value="Paciente demo"></div>
+      <div><label>Tipo de estudio</label><select id="study"><option>Resonancia cerebral</option><option>Tomografía cerebral</option></select></div>
+      <div><label>Médico revisor</label><input id="doctor" value="Dr./Dra. especialista"></div>
+    </div>
+  </div>
+</section>
+
+<section class="grid2" style="margin-top:22px">
+  <div class="uploadBox">
+    <h2>Subir imagen médica</h2>
+    <p>Puede ser PNG, JPG o WEBP. También puedes usar un caso demo.</p>
+    <input type="file" id="fileInput" accept="image/*">
+    <div class="actions">
+      <button class="btn secondary" onclick="useSynthetic('negativo')">Imagen demo negativa</button>
+      <button class="btn warn" onclick="useSynthetic('duda')">Imagen demo duda</button>
+      <button class="btn danger" onclick="useSynthetic('alta')">Imagen demo alta</button>
+    </div>
+    <div class="actions">
+      <button class="btn" id="continueBtn">Continuar a extracción</button>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Vista previa</h2>
+    <img id="preview" class="preview" alt="Vista previa de imagen médica">
+  </div>
+</section>
+
+<script>
+const canvasTmp = document.createElement("canvas");
+function useSynthetic(type) {
+  const dataUrl = createSyntheticImage(type, canvasTmp);
+  $("preview").src = dataUrl;
+  saveCase({ imageData: dataUrl, imageMode: "demo_" + type });
+}
+$("fileInput").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    $("preview").src = ev.target.result;
+    saveCase({ imageData: ev.target.result, imageMode: "upload", fileName: file.name });
+  };
+  reader.readAsDataURL(file);
+});
+$("continueBtn").addEventListener("click", () => {
+  if (!$("preview").src) useSynthetic("duda");
+  saveCase({
+    caseId: $("caseId").value,
+    patient: $("patient").value,
+    study: $("study").value,
+    doctor: $("doctor").value,
+    createdAt: new Date().toLocaleString("es-CR")
+  });
+  location.href = "extraccion.html";
+});
+useSynthetic("duda");
+</script>
+
+<div class="footer">Demo académico · El diagnóstico final siempre corresponde al médico especialista.</div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

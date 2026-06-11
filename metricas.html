@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Métricas del modelo</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo"></span> NeuroFlow Hospital IA</div>
+  <nav class="nav">
+    <a href="index.html">Inicio</a>
+    <a href="modelo.html">Modelo</a>
+    <a href="diagnostico.html">Reporte</a>
+  </nav>
+</header>
+<main class="main">
+
+<section class="panel">
+  <h1>Métricas reales del modelo Python</h1>
+  <p>Esta página sirve para defender el desempeño técnico durante la presentación.</p>
+  <div class="kpis" id="metricsBox"></div>
+</section>
+<section class="grid2" style="margin-top:22px">
+  <div class="panel">
+    <h2>Matriz de confusión · umbral 0.50</h2>
+    <div id="matrixStd"></div>
+  </div>
+  <div class="panel">
+    <h2>Matriz de confusión · umbral ajustado</h2>
+    <div id="matrixAlert"></div>
+  </div>
+</section>
+<script>
+renderMetrics();
+renderMatrices();
+</script>
+
+<div class="footer">Demo académico · El diagnóstico final siempre corresponde al médico especialista.</div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
