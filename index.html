@@ -1,115 +1,248 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>1. Cargar imagen médica</title>
-<link rel="stylesheet" href="styles.css"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Demo iterativo · Flujo clínico cerebral</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand"><span class="logo"></span> NeuroFlow Hospital IA</div>
-  <nav class="nav">
-    <a href="index.html">Inicio</a>
-    <a href="modelo.html">Modelo</a>
-    <a href="diagnostico.html">Reporte</a>
-  </nav>
-</header>
-<main class="main">
-<nav class="flow"><a href="index.html" class="active">1. Cargar imagen</a>
-<a href="extraccion.html">2. Extraer datos</a>
-<a href="modelo.html">3. Modelo IA</a>
-<a href="clasificacion.html">4. Clasificación</a>
-<a href="revision.html">5. Revisión médica</a>
-<a href="diagnostico.html">6. Diagnóstico</a></nav>
-<section class="hero">
-  <div>
-    <span class="badge">Paso 1 · Imagen médica</span>
-    <h1>Cargar imagen cerebral del paciente</h1>
-    <p class="lead">Simula el ingreso de una resonancia o imagen cerebral al sistema hospitalario. El archivo se procesa localmente en el navegador.</p>
-    <p class="note">Este demo no hace diagnóstico real. Simula el flujo de un sistema de apoyo a la decisión usando los resultados del proyecto en Python.</p>
-  </div>
-  <div class="panel">
-    <h2>Datos del caso</h2>
-    <div class="formGrid">
-      <div><label>ID caso</label><input id="caseId" value="TEC-G4-001"></div>
-      <div><label>Paciente</label><input id="patient" value="Paciente demo"></div>
-      <div><label>Tipo de estudio</label><select id="study"><option>Resonancia cerebral</option><option>Tomografía cerebral</option></select></div>
-      <div><label>Médico revisor</label><input id="doctor" value="Dr./Dra. especialista"></div>
+  <header>
+    <div class="brand">
+      <span class="dot"></span>
+      <div>
+        <div>Flujo clínico cerebral</div>
+        <div class="sub">Demo interactivo por pasos</div>
+      </div>
     </div>
-  </div>
-</section>
+    <div class="sub">Caso ejemplo listo para presentar</div>
+  </header>
 
+  <main>
+    <aside class="sidebar">
+      <h2>Ruta del caso</h2>
+      <p>Haz clic en <strong>Siguiente</strong> para avanzar paso a paso por el flujo completo del sistema.</p>
 
-<section class="panel" style="margin-top:22px;">
-  <h2>Ejemplo listo para presentar al profesor</h2>
-  <p>
-    Estos botones ejecutan automáticamente todo el flujo: carga una imagen médica demo, extrae características,
-    calcula la probabilidad con el modelo, clasifica el caso, simula la revisión médica y genera el reporte final.
-  </p>
-  <div class="actions">
-    <button class="btn danger" onclick="runCompleteDemo('alta')">Ejecutar caso demo completo · Zona alta</button>
-    <button class="btn warn" onclick="runCompleteDemo('duda')">Ejecutar caso demo completo · Zona de duda</button>
-    <button class="btn secondary" onclick="runCompleteDemo('negativo')">Ejecutar caso demo completo · Zona negativa</button>
-  </div>
-  <p class="note">
-    Recomendación para la exposición: usar primero “Zona alta” para mostrar el impacto del sistema y luego explicar que la decisión final siempre la toma el médico.
-  </p>
-</section>
+      <div class="step-list">
+        <div class="step-item">
+          <span class="num">1</span>
+          <span class="title">Imagen médica</span>
+          <div class="desc">Recepción del estudio cerebral del paciente.</div>
+        </div>
+        <div class="step-item">
+          <span class="num">2</span>
+          <span class="title">Extracción</span>
+          <div class="desc">Obtención de variables numéricas para el modelo.</div>
+        </div>
+        <div class="step-item">
+          <span class="num">3</span>
+          <span class="title">Modelo</span>
+          <div class="desc">Cálculo de la probabilidad estimada.</div>
+        </div>
+        <div class="step-item">
+          <span class="num">4</span>
+          <span class="title">Clasificación</span>
+          <div class="desc">Ubicación del caso por zona clínica.</div>
+        </div>
+        <div class="step-item">
+          <span class="num">5</span>
+          <span class="title">Revisión médica</span>
+          <div class="desc">Interpretación del especialista.</div>
+        </div>
+        <div class="step-item">
+          <span class="num">6</span>
+          <span class="title">Diagnóstico</span>
+          <div class="desc">Reporte final del flujo.</div>
+        </div>
+      </div>
+    </aside>
 
-<section class="grid2" style="margin-top:22px">
-  <div class="uploadBox">
-    <h2>Subir imagen médica</h2>
-    <p>Puede ser PNG, JPG o WEBP. También puedes usar un caso demo.</p>
-    <input type="file" id="fileInput" accept="image/*">
-    <div class="actions">
-      <button class="btn secondary" onclick="useSynthetic('negativo')">Imagen demo negativa</button>
-      <button class="btn warn" onclick="useSynthetic('duda')">Imagen demo duda</button>
-      <button class="btn danger" onclick="useSynthetic('alta')">Imagen demo alta</button>
-    </div>
-    <div class="actions">
-      <button class="btn" id="continueBtn">Continuar a extracción</button>
-    </div>
-  </div>
-  <div class="panel">
-    <h2>Vista previa</h2>
-    <img id="preview" class="preview" alt="Vista previa de imagen médica">
-  </div>
-</section>
+    <section class="layout">
+      <div class="top-card">
+        <div>
+          <h1>Ejemplo interactivo del sistema</h1>
+          <p>Este demo muestra un caso realista de uso hospitalario, avanzando paso a paso con clics, desde la recepción del estudio hasta el reporte final.</p>
+        </div>
+        <div class="badges">
+          <span class="badge">Accuracy 95.29%</span>
+          <span class="badge">Recall 95.34%</span>
+          <span class="badge">F1-score 97.40%</span>
+          <span class="badge">AUC-ROC 0.978368</span>
+        </div>
+      </div>
 
-<script>
-const canvasTmp = document.createElement("canvas");
-function useSynthetic(type) {
-  const dataUrl = createSyntheticImage(type, canvasTmp);
-  $("preview").src = dataUrl;
-  saveCase({ imageData: dataUrl, imageMode: "demo_" + type });
-}
-$("fileInput").addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    $("preview").src = ev.target.result;
-    saveCase({ imageData: ev.target.result, imageMode: "upload", fileName: file.name });
-  };
-  reader.readAsDataURL(file);
-});
-$("continueBtn").addEventListener("click", () => {
-  if (!$("preview").src) useSynthetic("duda");
-  saveCase({
-    caseId: $("caseId").value,
-    patient: $("patient").value,
-    study: $("study").value,
-    doctor: $("doctor").value,
-    createdAt: new Date().toLocaleString("es-CR")
-  });
-  location.href = "extraccion.html";
-});
-useSynthetic("duda");
-</script>
+      <div class="content-card">
+        <!-- STEP 1 -->
+        <div id="screen-0" class="step-screen">
+          <div class="grid-2">
+            <div class="panel">
+              <h3>1. Imagen médica</h3>
+              <p>El sistema recibe el estudio cerebral del paciente y registra el caso para su análisis.</p>
+              <div class="info-list">
+                <div class="info-item"><span class="k">ID caso</span><span class="v" id="caseId"></span></div>
+                <div class="info-item"><span class="k">Paciente</span><span class="v" id="patient"></span></div>
+                <div class="info-item"><span class="k">Estudio</span><span class="v" id="study"></span></div>
+                <div class="info-item"><span class="k">Médico asignado</span><span class="v" id="doctor"></span></div>
+              </div>
+              <div class="notice">
+                El flujo comienza con una resonancia cerebral lista para ser interpretada dentro del sistema.
+              </div>
+            </div>
 
-<div class="footer">Demo académico · El diagnóstico final siempre corresponde al médico especialista.</div>
-</main>
-<script src="app.js"></script>
+            <div class="panel">
+              <div class="brain-box">
+                <div class="brain-glow"></div>
+                <div class="brain-shape"></div>
+                <div class="brain-line"></div>
+                <div class="brain-line l2"></div>
+                <div class="brain-line l3"></div>
+                <div class="brain-line mid"></div>
+                <div class="scan"></div>
+              </div>
+              <div style="margin-top:14px">
+                <span class="label-chip">Resonancia cerebral cargada</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div id="screen-1" class="step-screen">
+          <div class="grid-2">
+            <div class="panel">
+              <h3>2. Extracción de características</h3>
+              <p>El sistema transforma la imagen en variables cuantitativas que serán utilizadas por el modelo de clasificación.</p>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Variable</th><th>Valor</th></tr>
+                  </thead>
+                  <tbody id="featuresBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Resumen</h3>
+              <p>Se obtienen variables de primer orden, textura y calidad, como media, varianza, entropía, contraste, homogeneidad, correlación, PSNR, SSIM y otras.</p>
+              <div class="notice">
+                Estas 16 variables son exactamente las que alimentan el modelo usado en el proyecto.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div id="screen-2" class="step-screen">
+          <div class="grid-2">
+            <div class="panel">
+              <h3>3. Modelo de clasificación</h3>
+              <p>Las variables extraídas ingresan al modelo entrenado en Python. El resultado es una probabilidad estimada.</p>
+              <div class="metrics">
+                <div class="metric"><span>Accuracy</span><strong id="metricAcc"></strong></div>
+                <div class="metric"><span>Recall</span><strong id="metricRecall"></strong></div>
+                <div class="metric"><span>F1-score</span><strong id="metricF1"></strong></div>
+                <div class="metric"><span>AUC-ROC</span><strong id="metricAuc"></strong></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Resultado del modelo</h3>
+              <div class="result-box">
+                <div style="font-size:15px;color:#7f1d1d;font-weight:700">Probabilidad estimada</div>
+                <div class="zone" id="probability"></div>
+                <div class="gauge"><i id="gaugeFill"></i></div>
+                <div class="label" id="zoneLabel"></div>
+                <div class="action" id="zoneAction"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div id="screen-3" class="step-screen">
+          <div class="grid-2">
+            <div class="panel">
+              <h3>4. Clasificación</h3>
+              <p>La salida del modelo se convierte en una zona operativa para orientar la revisión clínica.</p>
+              <div class="info-list">
+                <div class="info-item"><span class="k">Umbral de alerta</span><span class="v" id="thresholdLabel"></span></div>
+                <div class="info-item"><span class="k">Zona asignada</span><span class="v" id="zoneName"></span></div>
+              </div>
+              <div class="notice">
+                En este caso, la probabilidad estimada supera la zona alta, por lo que el sistema recomienda revisión prioritaria.
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Zonas del sistema</h3>
+              <div class="info-list">
+                <div class="info-item" style="background:var(--soft-green)"><span class="k">Zona negativa</span><span class="v">P &lt; 0.212</span></div>
+                <div class="info-item" style="background:var(--soft-yellow)"><span class="k">Zona de duda</span><span class="v">0.212 ≤ P &lt; 0.70</span></div>
+                <div class="info-item" style="background:var(--soft-red)"><span class="k">Zona alta</span><span class="v">P ≥ 0.70</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div id="screen-4" class="step-screen">
+          <div class="grid-2">
+            <div class="panel review-area">
+              <h3>5. Revisión médica</h3>
+              <p>El especialista interpreta el resultado del sistema junto con la imagen y el expediente del paciente.</p>
+              <label for="reviewText"><strong>Observación del especialista</strong></label>
+              <textarea id="reviewText"></textarea>
+              <label for="doctorDecision" style="display:block;margin-top:14px"><strong>Decisión clínica</strong></label>
+              <input id="doctorDecision" />
+              <div style="margin-top:14px">
+                <button id="applyReviewBtn" class="secondary">Aplicar al reporte final</button>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Apoyo al criterio clínico</h3>
+              <p>El sistema no sustituye al médico. Su función es ayudar a priorizar el caso y documentar el resultado del modelo.</p>
+              <div class="notice">
+                La responsabilidad final del diagnóstico sigue estando en el profesional de salud.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 6 -->
+        <div id="screen-5" class="step-screen">
+          <div class="report">
+            <h3>6. Reporte final del caso</h3>
+            <div class="report-grid">
+              <div class="k">ID caso</div><div class="v" id="reportCaseId"></div>
+              <div class="k">Paciente</div><div class="v" id="reportPatient"></div>
+              <div class="k">Estudio</div><div class="v" id="reportStudy"></div>
+              <div class="k">Médico revisor</div><div class="v" id="reportDoctor"></div>
+              <div class="k">Probabilidad estimada</div><div class="v" id="reportProb"></div>
+              <div class="k">Zona asignada</div><div class="v" id="reportZone"></div>
+              <div class="k">Clasificación</div><div class="v" id="reportZoneLabel"></div>
+              <div class="k">Acción sugerida</div><div class="v" id="reportAction"></div>
+              <div class="k">Revisión médica</div><div class="v" id="reportReview">El especialista revisa la imagen, valida la probabilidad del modelo y la integra con el expediente clínico del paciente.</div>
+              <div class="k">Decisión clínica</div><div class="v" id="reportDecision"></div>
+            </div>
+            <div class="notice">
+              Reporte académico de apoyo clínico. No corresponde a diagnóstico médico real.
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <div class="left-actions">
+            <button id="resetBtn" class="ghost">Reiniciar flujo</button>
+            <span class="counter" id="stepCounter"></span>
+          </div>
+          <div class="right-actions">
+            <button id="prevBtn" class="secondary">Anterior</button>
+            <button id="nextBtn" class="primary">Siguiente</button>
+            <button id="printBtn" class="ghost">Imprimir reporte</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
