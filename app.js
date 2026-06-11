@@ -585,3 +585,46 @@ function renderMatrices() {
   if ($("matrixStd")) $("matrixStd").innerHTML = matrixHTML(MODEL.metrics.cm_std);
   if ($("matrixAlert")) $("matrixAlert").innerHTML = matrixHTML(MODEL.metrics.cm_alert);
 }
+
+
+function runCompleteDemo(type="alta") {
+  const canvas = document.createElement("canvas");
+  const imageData = createSyntheticImage(type, canvas);
+  const features = computeImageFeaturesFromCanvas(canvas);
+  const prediction = predictFromFeatures(features);
+
+  const caseLabel = type === "alta" ? "CASO-DEMO-ALTA" : type === "duda" ? "CASO-DEMO-DUDA" : "CASO-DEMO-NEGATIVA";
+  const patientLabel = type === "alta" ? "Paciente demo - alerta alta" : type === "duda" ? "Paciente demo - zona de duda" : "Paciente demo - zona negativa";
+
+  let doctorDecision = "";
+  let review = "";
+
+  if (prediction.zone.key === "alta") {
+    doctorDecision = "Confirmar sospecha y solicitar estudios adicionales";
+    review = "El sistema clasifica el caso en zona alta. El médico revisa la imagen, observa un patrón que requiere atención prioritaria y recomienda confirmar el hallazgo con revisión especializada y estudios complementarios.";
+  } else if (prediction.zone.key === "duda") {
+    doctorDecision = "Enviar a segunda lectura radiológica";
+    review = "El sistema clasifica el caso en zona de duda. El médico considera que el resultado no es concluyente y solicita segunda lectura radiológica antes de emitir una conclusión definitiva.";
+  } else {
+    doctorDecision = "Descartar hallazgo relevante y mantener seguimiento";
+    review = "El sistema clasifica el caso en zona negativa. El médico revisa la imagen y el expediente, y considera mantener seguimiento clínico regular según protocolo.";
+  }
+
+  saveCase({
+    caseId: caseLabel,
+    patient: patientLabel,
+    study: "Resonancia cerebral demo",
+    doctor: "Dr./Dra. especialista demo",
+    imageData,
+    imageMode: "demo_completo_" + type,
+    createdAt: new Date().toLocaleString("es-CR"),
+    features,
+    extractedAt: new Date().toLocaleString("es-CR"),
+    prediction,
+    review,
+    doctorDecision,
+    reviewedAt: new Date().toLocaleString("es-CR")
+  });
+
+  location.href = "diagnostico.html";
+}

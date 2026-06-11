@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ejemplo completo - NeuroFlow Hospital IA</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo"></span> NeuroFlow Hospital IA</div>
+  <nav class="nav">
+    <a href="index.html">Inicio</a>
+    <a href="metricas.html">Métricas</a>
+  </nav>
+</header>
+<main class="main">
+  <section class="hero">
+    <div>
+      <span class="badge">Ejemplo completo</span>
+      <h1>Caso demo listo para exponer</h1>
+      <p class="lead">
+        Esta página ejecuta un caso completo sin necesidad de subir archivos. Sirve para enseñar al profesor
+        cómo el sistema conecta imagen, extracción de variables, modelo IA, clasificación, revisión médica y reporte final.
+      </p>
+      <div class="actions">
+        <button class="btn danger" onclick="runCompleteDemo('alta')">Iniciar demo zona alta</button>
+        <button class="btn warn" onclick="runCompleteDemo('duda')">Iniciar demo zona de duda</button>
+        <button class="btn secondary" onclick="runCompleteDemo('negativo')">Iniciar demo zona negativa</button>
+      </div>
+      <p class="note">
+        El caso demo usa una imagen sintética generada en el navegador. La extracción calcula variables desde el canvas
+        y luego las envía al modelo de Regresión Logística entrenado con los resultados reales del proyecto.
+      </p>
+    </div>
+    <div class="panel">
+      <h2>Qué verá el jurado</h2>
+      <ol>
+        <li>Imagen médica demo generada automáticamente.</li>
+        <li>Extracción de 16 variables predictoras.</li>
+        <li>Probabilidad calculada por Regresión Logística.</li>
+        <li>Zona negativa, zona de duda o zona alta.</li>
+        <li>Revisión simulada del médico.</li>
+        <li>Reporte final imprimible.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

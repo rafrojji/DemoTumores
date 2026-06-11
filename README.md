@@ -36,3 +36,15 @@ Demo multi-página para GitHub Pages que simula un flujo hospitalario completo:
 ## Publicación en GitHub Pages
 
 Subir todos los archivos a la raíz del repositorio y activar GitHub Pages en Settings > Pages.
+
+
+## Ejemplo listo para presentación
+
+Se agregó `ejemplo.html`, una página que ejecuta un caso completo sin subir archivos.
+
+Opciones:
+- Demo zona alta
+- Demo zona de duda
+- Demo zona negativa
+
+También en `index.html` hay botones para ejecutar el caso completo directamente.
