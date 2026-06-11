@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video interactivo por pasos</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo"></span>
+      <div>
+        <div>Flujo clínico cerebral</div>
+        <div class="sub">Video interactivo con pausas por paso</div>
+      </div>
+    </div>
+    <div class="sub">Haz clic para avanzar</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="video-card">
+        <div class="video-wrap">
+          <video id="mainVideo" preload="auto" playsinline>
+            <source src="video_hospitalario_cerebral_3d.mp4" type="video/mp4">
+            Tu navegador no soporta video HTML5.
+          </video>
+
+          <div class="pause-overlay" id="pauseOverlay">
+            <div class="overlay-box">
+              <div class="overlay-top">
+                <div>
+                  <span class="badge" id="stepCounter">Pausa</span>
+                  <h1 id="stepTitle"></h1>
+                  <div id="stepSubtitle"></div>
+                  <p id="stepNote"></p>
+                </div>
+              </div>
+              <div class="actions">
+                <button id="startBtn">Iniciar presentación</button>
+                <button id="nextBtn">Continuar al siguiente paso</button>
+                <button id="replayBtn" class="secondary">Reiniciar video</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side-card">
+        <h2>Pasos del caso</h2>
+        <p class="sub">También puedes hacer clic en cualquier paso para ir directamente a esa parte.</p>
+        <div class="timeline" id="timeline"></div>
+        <div class="tip">
+          Para exponerlo: habla en cada pausa y luego presiona <strong>Continuar al siguiente paso</strong>.
+        </div>
+      </aside>
+    </section>
+
+    <div class="footer">
+      Demo académico · El criterio final corresponde al médico especialista.
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
