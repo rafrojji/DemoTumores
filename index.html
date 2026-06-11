@@ -3,194 +3,213 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NeuroScan Grupo 4 · Demo fusionado</title>
+  <title>Demo flujo hospitalario - tumores cerebrales</title>
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><span class="logo"></span> NeuroScan Grupo 4</div>
-    <nav class="nav">
-      <button id="tab_demo" class="tab active" onclick="switchTab('demo')">Demo IA</button>
-      <button id="tab_modelo" class="tab" onclick="switchTab('modelo')">Modelo</button>
-      <button id="tab_crisp" class="tab" onclick="switchTab('crisp')">CRISP-DM</button>
-      <button id="presentationBtn">Modo presentación</button>
-    </nav>
+    <div class="brand"><span class="logo"></span> Demo hospitalario · IA Tumores</div>
+    <div class="badge">Flujo práctico del hospital</div>
   </header>
 
   <section class="hero">
     <div>
-      <span class="badge">Trabajo final · IA Empresarial · Tecnológico de Costa Rica</span>
-      <h1>Prototipo académico de clasificación de tumores cerebrales</h1>
+      <h1>Propuesta demo del sistema según el flujo del hospital</h1>
       <p class="lead">
-        Demo fusionado con diseño médico/IA, simulador interactivo y resultados reales del notebook en Python.
-        El modelo usado es Regresión Logística para clasificación binaria supervisada.
+        Este demo muestra cómo un médico podría usar el modelo dentro de un sistema institucional:
+        desde la recepción de la imagen hasta la decisión clínica final.
       </p>
-      <div class="heroActions">
-        <button class="btn" onclick="document.getElementById('demoSection').scrollIntoView()">Probar simulador</button>
-        <button class="btn secondary" onclick="switchTab('modelo')">Ver métricas reales</button>
-      </div>
       <p class="note">
-        Aviso académico: este demo no es diagnóstico médico. No analiza imágenes directamente.
-        Trabaja con variables numéricas previamente extraídas y reproduce los resultados del proyecto en Python.
+        En esta propuesta, la IA no reemplaza al médico. El modelo apoya la priorización y la revisión clínica usando las variables numéricas extraídas de la imagen.
       </p>
     </div>
 
-    <div class="visual">
-      <div class="scan"></div>
-      <div class="brain3d">
-        <div class="orbit o1"><span class="node n1"></span><span class="node n2"></span></div>
-        <div class="orbit o2"><span class="node n3"></span></div>
-        <div class="orbit o3"><span class="node n4"></span></div>
-        <div class="brainCore"></div>
-      </div>
-      <div class="hud">
-        <div class="hudCard"><span>Zona del modelo</span><strong id="brainStatus">--</strong></div>
-        <div class="hudCard"><span>Probabilidad</span><strong id="brainProb">--</strong></div>
-        <div class="hudCard"><span>AUC real</span><strong>0.9784</strong></div>
-      </div>
+    <div class="heroCard">
+      <h3>Estado del caso actual</h3>
+      <div class="value" id="heroProb">--</div>
+      <p>Probabilidad estimada por el modelo</p>
+      <p><strong>Zona actual:</strong> <span id="heroZone">--</span></p>
     </div>
   </section>
 
   <main>
-    <section id="view_demo" class="view active">
-      <section class="section" id="demoSection">
-        <div class="grid2">
-          <div class="panel">
-            <h2>Simulador interactivo</h2>
-            <p>
-              Use los valores base o pruebe escenarios. El cálculo utiliza los coeficientes reales de la
-              Regresión Logística entrenada en Python con <code>class_weight="balanced"</code>.
-            </p>
+    <section class="panel">
+      <h2>Escenarios de demostración</h2>
+      <p>Usa un ejemplo base para mostrar cómo cambia el flujo clínico según la salida del modelo.</p>
+      <div class="controls">
+        <button class="btn secondary" id="btnNeg">Caso zona negativa</button>
+        <button class="btn warn" id="btnDoubt">Caso zona de duda</button>
+        <button class="btn danger" id="btnHigh">Caso zona alta</button>
+        <button class="btn" id="btnRefresh">Actualizar caso</button>
+      </div>
 
-            <div class="actions">
-              <button class="btn secondary" id="btnMedian">Usar medianas</button>
-              <button class="btn danger" id="btnHigh">Ejemplo zona alta</button>
-              <button class="btn warn" id="btnDoubt">Ejemplo zona de duda</button>
-              <button class="btn secondary" id="btnLow">Ejemplo zona negativa</button>
+      <div class="progress">
+        <div class="step active"><strong>1. Imagen médica</strong><small>Se toma una resonancia o imagen cerebral</small></div>
+        <div class="step"><strong>2. Extracción</strong><small>El sistema obtiene variables numéricas</small></div>
+        <div class="step"><strong>3. Modelo IA</strong><small>La Regresión Logística calcula probabilidad</small></div>
+        <div class="step"><strong>4. Clasificación</strong><small>Zona negativa, duda o alta</small></div>
+        <div class="step"><strong>5. Médico revisa</strong><small>Interpreta resultado, imagen y expediente</small></div>
+        <div class="step"><strong>6. Decisión clínica</strong><small>Confirmar, descartar o pedir estudios</small></div>
+      </div>
+
+      <!-- Paso 1 -->
+      <div class="screen active stepCard">
+        <h2>1. Imagen médica</h2>
+        <div class="twoCol">
+          <div class="imageMock">
+            <div class="scan"></div>
+            <div class="mockLabel">Estudio recibido por el sistema</div>
+            <div class="mriBrain"></div>
+            <div class="hud">
+              <div class="hudCard"><span>Tipo de estudio</span><strong>Resonancia cerebral</strong></div>
+              <div class="hudCard"><span>Uso</span><strong>Apoyo a la revisión médica</strong></div>
             </div>
-
-            <div id="featureGrid"></div>
           </div>
-
-          <aside class="resultCard" id="resultCard">
-            <span class="resultIcon" id="resultIcon">--</span>
-            <h2>Resultado del modelo</h2>
-            <div class="probability" id="probability">--</div>
-            <h3 id="resultLabel">--</h3>
-            <strong id="resultZone">--</strong>
-            <div class="gauge"><i id="gaugeFill"></i></div>
-            <p id="resultExplanation">--</p>
+          <div>
+            <p>
+              En un flujo real, el hospital recibe una resonancia o imagen cerebral del paciente.
+              El sistema no emite un diagnóstico directo sobre la imagen: primero debe transformarla en información cuantificable.
+            </p>
             <p class="note">
-              Umbral de alerta del notebook: <strong>0.212</strong>. Umbral alto usado para zona superior: <strong>0.70</strong>.
+              Mensaje para presentar: el modelo no trabaja directamente sobre la imagen visible,
+              sino sobre las variables numéricas ya extraídas del estudio.
             </p>
-
-            <h3>Variables que más movieron esta predicción</h3>
-            <div id="contributions"></div>
-          </aside>
-        </div>
-      </section>
-    </section>
-
-    <section id="view_modelo" class="view">
-      <section class="section">
-        <div class="panel">
-          <h2>Resultados reales del notebook Python</h2>
-          <p class="lead">Estos datos salen del código final: limpieza, entrenamiento, evaluación y ajuste de umbral.</p>
-
-          <div class="kpis">
-            <div class="kpi"><span>Imágenes procesadas</span><strong id="kpiRows">--</strong></div>
-            <div class="kpi"><span>Variables predictoras</span><strong id="kpiVars">--</strong></div>
-            <div class="kpi"><span>AUC-ROC</span><strong id="kpiAuc">--</strong></div>
-            <div class="kpi"><span>Recall</span><strong id="kpiRecall">--</strong></div>
-            <div class="kpi"><span>Accuracy</span><strong id="kpiAcc">--</strong></div>
-            <div class="kpi"><span>F1-score</span><strong id="kpiF1">--</strong></div>
           </div>
+        </div>
+      </div>
 
-          <p id="distText" class="note"></p>
-
-          <div class="matrixWrap">
-            <div>
-              <h3>Matriz de confusión · umbral 0.50</h3>
-              <div id="cm050"></div>
-            </div>
-            <div>
-              <h3>Matriz de confusión · umbral ajustado <span id="thresholdText">--</span></h3>
-              <div id="cmOpt"></div>
+      <!-- Paso 2 -->
+      <div class="screen stepCard">
+        <h2>2. Extracción de características</h2>
+        <p id="extractionSummary">--</p>
+        <div class="twoCol">
+          <div>
+            <div id="featuresContainer"></div>
+          </div>
+          <div>
+            <div class="panel">
+              <h3>Resumen de extracción</h3>
+              <div class="valueBig" id="featureCount">--</div>
+              <p>variables predictoras utilizadas por el modelo</p>
+              <p class="note">
+                Estas variables representan características de primer orden, textura y calidad, como media, entropía, contraste, homogeneidad, correlación, PSNR, SSIM, MSE y DC.
+              </p>
             </div>
           </div>
-
-          <p class="note">
-            Hallazgo defendible: el ajuste del umbral reduce los falsos negativos de 11 a 6,
-            manteniendo 1 falso positivo. En un contexto de análisis sensible, el falso negativo es el error más crítico.
-          </p>
         </div>
-      </section>
+      </div>
 
-      <section class="section">
-        <div class="grid2">
+      <!-- Paso 3 -->
+      <div class="screen stepCard">
+        <h2>3. Modelo IA</h2>
+        <div class="twoCol">
           <div class="panel">
-            <h2>Sistema de tres zonas del notebook</h2>
-            <p>
-              El notebook no se queda solo con 0/1. También propone una zona de advertencia:
-              bajo <strong id="thresholdText2">0.212</strong>, zona de duda y zona alta desde <strong id="thresholdHighText">0.70</strong>.
+            <h3>Motor de predicción</h3>
+            <p><strong>Modelo:</strong> <span id="modelName">--</span></p>
+            <div class="valueBig" id="modelProb">--</div>
+            <p>probabilidad estimada de tumor</p>
+            <p><strong>AUC real del notebook:</strong> <span id="modelAuc">--</span></p>
+            <p class="note">
+              El sistema usa Regresión Logística para calcular una probabilidad a partir de las variables del caso.
             </p>
-            <div class="zones">
-              <div class="zone"><strong class="good" id="zoneNegative">--</strong><span>Zona negativa</span></div>
-              <div class="zone"><strong class="warn" id="zoneDoubt">--</strong><span>Zona de duda</span></div>
-              <div class="zone"><strong class="bad" id="zoneHigh">--</strong><span>Zona alta del modelo</span></div>
-            </div>
           </div>
+          <div>
+            <p>
+              En este paso, la IA convierte los valores extraídos en una salida probabilística. Esto es útil porque permite definir umbrales y niveles de alerta, no solo una respuesta binaria.
+            </p>
+          </div>
+        </div>
+      </div>
 
+      <!-- Paso 4 -->
+      <div class="screen stepCard">
+        <h2>4. Clasificación</h2>
+        <div id="zoneCard" class="zoneCard">
+          <p>Resultado del sistema</p>
+          <div class="zoneName" id="zoneName">--</div>
+          <h3 id="zoneLabel">--</h3>
+          <div class="gauge"><i id="gaugeFill"></i></div>
+          <p id="zoneThresholds">--</p>
+        </div>
+        <p class="note" style="margin-top:18px;">
+          El caso puede caer en zona negativa, zona de duda o zona alta. Esto permite que el sistema apoye la priorización del trabajo clínico.
+        </p>
+      </div>
+
+      <!-- Paso 5 -->
+      <div class="screen stepCard">
+        <h2>5. Médico revisa</h2>
+        <div class="twoCol">
+          <div>
+            <p id="doctorReview">--</p>
+            <p><strong>Acción sugerida por el sistema:</strong> <span id="doctorAction">--</span></p>
+            <p class="note">
+              Aquí el especialista integra tres fuentes: la imagen, el expediente clínico y el resultado del modelo.
+            </p>
+          </div>
+          <div>
+            <h3>Variables que más influyeron</h3>
+            <div id="contribs"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paso 6 -->
+      <div class="screen stepCard">
+        <h2>6. Decisión clínica</h2>
+        <div class="twoCol">
           <div class="panel">
-            <h2>Importancia de variables</h2>
+            <h3>Salida final del flujo</h3>
+            <p><strong>Probabilidad:</strong> <span id="finalProb">--</span></p>
+            <p><strong>Zona:</strong> <span id="finalZone">--</span></p>
+            <p><strong>Decisión sugerida:</strong> <span id="clinicalDecision">--</span></p>
+            <p class="note" id="finalMessage">--</p>
+          </div>
+          <div>
             <p>
-              Ranking calculado con el valor absoluto de los coeficientes reales de la Regresión Logística.
+              La decisión clínica nunca la toma la IA sola. El médico puede confirmar, descartar o solicitar estudios adicionales según el contexto del paciente.
             </p>
-            <div id="importanceList"></div>
+            <p>
+              Esa es la forma correcta de defender el modelo: como una herramienta de apoyo a la decisión, no como un sustituto del especialista.
+            </p>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section class="section">
-        <div class="panel">
-          <h2>Limpieza de datos demostrada</h2>
-          <p>Estos son los problemas corregidos reportados en el resumen ejecutivo del notebook.</p>
-          <div class="cleanGrid">
-            <div class="cleanItem"><span>Valores multi-punto corregidos</span><strong id="cleanMulti">--</strong></div>
-            <div class="cleanItem"><span>Texto basura imputado</span><strong id="cleanGarbage">--</strong></div>
-            <div class="cleanItem"><span>Correlaciones imposibles corregidas</span><strong id="cleanCorr">--</strong></div>
-            <div class="cleanItem"><span>Celdas vacías imputadas</span><strong id="cleanEmpty">--</strong></div>
-            <div class="cleanItem"><span>Filas sin diagnóstico eliminadas</span><strong id="cleanRows">--</strong></div>
-            <div class="cleanItem"><span>NaN finales</span><strong id="cleanNan">--</strong></div>
-          </div>
-        </div>
-      </section>
+      <div class="navButtons">
+        <button class="btn secondary" id="btnPrev">Paso anterior</button>
+        <button class="btn" id="btnNext">Siguiente paso</button>
+      </div>
     </section>
 
-    <section id="view_crisp" class="view">
-      <section class="section">
-        <div class="panel">
-          <h2>Metodología CRISP-DM aplicada</h2>
-          <div class="pipeline">
-            <div class="step"><b>1</b><strong>Negocio</strong><p>Apoyar la explicación de clasificación Tumor / No-Tumor como caso académico de IA empresarial.</p></div>
-            <div class="step"><b>2</b><strong>Datos</strong><p>Dataset de 1.275 filas y 18 columnas; luego de limpieza quedan 1.273 registros válidos.</p></div>
-            <div class="step"><b>3</b><strong>Preparación</strong><p>Conversión de object a float, corrección multi-punto, imputación por mediana y eliminación de tipo vacío.</p></div>
-            <div class="step"><b>4</b><strong>Modelo</strong><p>Regresión Logística con datos escalados y class_weight="balanced".</p></div>
-            <div class="step"><b>5</b><strong>Evaluación</strong><p>Matriz de confusión, accuracy, precision, recall, F1-score, AUC-ROC y ajuste de umbral.</p></div>
-          </div>
+    <section class="panel" style="margin-top:24px;">
+      <h2>Métricas reales del proyecto</h2>
+      <div class="kpis">
+        <div class="kpi"><span>Accuracy</span><strong id="mAccuracy">--</strong></div>
+        <div class="kpi"><span>Precision</span><strong id="mPrecision">--</strong></div>
+        <div class="kpi"><span>Recall</span><strong id="mRecall">--</strong></div>
+        <div class="kpi"><span>F1-score</span><strong id="mF1">--</strong></div>
+        <div class="kpi"><span>AUC-ROC</span><strong id="mAuc">--</strong></div>
+        <div class="kpi"><span>Registros limpios</span><strong id="mRows">--</strong></div>
+      </div>
+      <p class="note"><strong>Distribución del dataset:</strong> <span id="mClasses">--</span></p>
 
-          <p class="note">
-            Mensaje para exposición: “El valor del proyecto no está solo en entrenar un modelo,
-            sino en limpiar datos defectuosos, interpretar métricas y convertir la probabilidad en una decisión explicable.”
-          </p>
+      <div class="matrixWrap">
+        <div>
+          <h3>Matriz de confusión · umbral 0.50</h3>
+          <div id="mConf50"></div>
         </div>
-      </section>
+        <div>
+          <h3>Matriz de confusión · umbral ajustado</h3>
+          <div id="mConfOpt"></div>
+        </div>
+      </div>
     </section>
+
+    <div class="footer">
+      Demo académico · Flujo práctico del hospital · El diagnóstico final siempre corresponde al médico especialista.
+    </div>
   </main>
-
-  <footer class="footer">
-    Grupo 4 · Trabajo final académico · Módulo III Aplicaciones de Inteligencia Artificial Empresarial · No corresponde a diagnóstico médico real.
-  </footer>
 
   <script src="app.js"></script>
 </body>

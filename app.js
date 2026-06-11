@@ -92,26 +92,18 @@ const MODEL = {
   },
   "intercept": 7.606985020098608,
   "metrics": {
-    "imagenes_procesadas": 1273,
-    "variables_predictoras": 16,
+    "records": 1273,
+    "features_count": 16,
     "tumor": 1176,
     "no_tumor": 97,
-    "pct_tumor": 92.4,
-    "pct_no_tumor": 7.6,
-    "ratio": 12.1,
-    "train_rows": 1018,
-    "test_rows": 255,
-    "iteraciones": 31,
     "accuracy": 0.9529411764705882,
     "precision": 0.995575221238938,
     "recall": 0.9533898305084746,
     "f1": 0.974025974025974,
     "auc": 0.9783675289919714,
-    "umbral_optimo": 0.212275876059717,
-    "umbral_alto": 0.7,
-    "recall_estimado_umbral": 0.9745762711864406,
-    "fpr_estimado_umbral": 0.05263157894736842,
-    "cm_050": {
+    "threshold_alert": 0.212275876059717,
+    "threshold_high": 0.7,
+    "cm_std": {
       "tn": 18,
       "fp": 1,
       "fn": 11,
@@ -122,111 +114,38 @@ const MODEL = {
       "fp": 1,
       "fn": 6,
       "tp": 230
-    },
-    "zonas": {
-      "Zona alta del modelo": 216,
-      "Zona de duda": 15,
-      "Zona negativa": 24
-    },
-    "limpieza": {
-      "multipunto": 8639,
-      "multipunto_pct": 42.3,
-      "texto_basura": 29,
-      "correlacion_imposible": 2,
-      "celdas_vacias": 66,
-      "filas_diagnostico_vacio_eliminadas": 2,
-      "nan_final": 0
     }
-  },
-  "importance": [
-    {
-      "feature": "dc",
-      "coef": 7.780964283881684,
-      "abs": 7.780964283881684
-    },
-    {
-      "feature": "asm",
-      "coef": 2.77161486072695,
-      "abs": 2.77161486072695
-    },
-    {
-      "feature": "mse",
-      "coef": 2.6129921081634486,
-      "abs": 2.6129921081634486
-    },
-    {
-      "feature": "energia",
-      "coef": 2.2459361748623756,
-      "abs": 2.2459361748623756
-    },
-    {
-      "feature": "ssim",
-      "coef": -1.8369294361352837,
-      "abs": 1.8369294361352837
-    },
-    {
-      "feature": "correlacion",
-      "coef": -0.46145052660049557,
-      "abs": 0.46145052660049557
-    },
-    {
-      "feature": "homogeneidad",
-      "coef": -0.45677031137755597,
-      "abs": 0.45677031137755597
-    },
-    {
-      "feature": "asimetria",
-      "coef": 0.3672749957195039,
-      "abs": 0.3672749957195039
-    },
-    {
-      "feature": "media",
-      "coef": -0.1947845202635357,
-      "abs": 0.1947845202635357
-    },
-    {
-      "feature": "desviacion.estandar",
-      "coef": 0.17822256799154207,
-      "abs": 0.17822256799154207
-    },
-    {
-      "feature": "psnr",
-      "coef": -0.09484730687551188,
-      "abs": 0.09484730687551188
-    },
-    {
-      "feature": "entropia",
-      "coef": -0.05166584777874989,
-      "abs": 0.05166584777874989
-    },
-    {
-      "feature": "disiminitud",
-      "coef": 0.03889828782362975,
-      "abs": 0.03889828782362975
-    },
-    {
-      "feature": "varianza",
-      "coef": -0.022803625386648846,
-      "abs": 0.022803625386648846
-    },
-    {
-      "feature": "contraste",
-      "coef": -0.007925480091656072,
-      "abs": 0.007925480091656072
-    },
-    {
-      "feature": "kurtosis",
-      "coef": -0.0027247952524777695,
-      "abs": 0.0027247952524777695
-    }
-  ]
+  }
 };
 
-const GROUPS = {
-  "Primer orden": ["media", "varianza", "desviacion.estandar", "entropia", "asimetria", "kurtosis"],
-  "Textura": ["contraste", "energia", "asm", "homogeneidad", "disiminitud", "correlacion"],
-  "Calidad / similitud": ["psnr", "ssim", "mse", "dc"]
+const FEATURE_GROUPS = {
+  "Primer orden": ["media","varianza","desviacion.estandar","entropia","asimetria","kurtosis"],
+  "Textura": ["contraste","energia","asm","homogeneidad","disiminitud","correlacion"],
+  "Calidad / similitud": ["psnr","ssim","mse","dc"]
 };
+
+const CASES = {
+  negativo: {
+    media: 85, varianza: 105, "desviacion.estandar": 185, entropia: 0.88, asimetria: 130,
+    kurtosis: 155, contraste: 115, energia: 0.98, asm: 0.96, homogeneidad: 0.99,
+    disiminitud: 0.35, correlacion: 0.91, psnr: 720, ssim: 0.98, mse: 0.02, dc: 0.72
+  },
+  duda: {
+    media: 145, varianza: 170, "desviacion.estandar": 290, entropia: 0.74, asimetria: 150,
+    kurtosis: 260, contraste: 140, energia: 0.88, asm: 0.77, homogeneidad: 0.91,
+    disiminitud: 38, correlacion: 0.94, psnr: 820, ssim: 0.91, mse: 0.08, dc: 0.51
+  },
+  alta: {
+    media: 234.485168, varianza: 253.898563, "desviacion.estandar": 503.883481, entropia: 0.651174,
+    asimetria: 198.420231, kurtosis: 542.104152, contraste: 181.467713, energia: 0.781557,
+    asm: 0.610831, homogeneidad: 0.847033, disiminitud: 276.541144, correlacion: 0.968576,
+    psnr: 979.746298, ssim: 0.777011, mse: 0.171163, dc: 0.303989
+  }
+};
+
+function cssSafe(name) {
+  return name.replaceAll(".", "_");
+}
 
 function sigmoid(z) {
   return 1 / (1 + Math.exp(-z));
@@ -236,214 +155,206 @@ function pct(v, d=1) {
   return (v * 100).toFixed(d) + "%";
 }
 
-function num(v, d=3) {
+function fmt(v, d=4) {
   return Number(v).toLocaleString("es-CR", { maximumFractionDigits: d });
 }
 
-function compute() {
-  let z = MODEL.intercept;
-  const contributions = [];
-
-  MODEL.features.forEach(name => {
-    const input = document.getElementById("f_" + cssSafe(name));
-    let raw = parseFloat(input.value);
-    if (Number.isNaN(raw)) {
-      raw = MODEL.medians[name];
-      input.value = raw;
-    }
-
-    const scaled = (raw - MODEL.means[name]) / MODEL.scales[name];
-    const contribution = MODEL.coef[name] * scaled;
-    z += contribution;
-
-    contributions.push({
-      name,
-      raw,
-      scaled,
-      contribution,
-      direction: contribution >= 0 ? "aumenta probabilidad" : "reduce probabilidad"
-    });
-  });
-
-  contributions.sort((a,b) => Math.abs(b.contribution) - Math.abs(a.contribution));
-  return { probability: sigmoid(z), z, contributions };
-}
-
-function classify(prob) {
-  const low = MODEL.metrics.umbral_optimo;
-  const high = MODEL.metrics.umbral_alto;
-
-  if (prob >= high) {
-    return {
-      zone: "Zona alta del modelo",
-      label: "Clasificación positiva del modelo",
-      className: "danger",
-      icon: "!",
-      explanation: "La probabilidad supera el umbral alto de 0.70 utilizado en el notebook. Se recomienda revisar el caso con criterio profesional."
-    };
-  }
-
-  if (prob >= low) {
-    return {
-      zone: "Zona de duda",
-      label: "Clasificación en zona de incertidumbre",
-      className: "warn",
-      icon: "?",
-      explanation: "La probabilidad supera el umbral de alerta 0.212, pero no alcanza 0.70. El notebook propone esta zona para repetir o revisar el análisis."
-    };
-  }
-
-  return {
-    zone: "Zona negativa",
-    label: "Clasificación negativa del modelo",
-    className: "safe",
-    icon: "✓",
-    explanation: "La probabilidad queda por debajo del umbral de alerta 0.212 utilizado en el notebook."
-  };
-}
-
-function cssSafe(name) {
-  return name.replaceAll(".", "_").replaceAll(" ", "_");
-}
-
-function renderInputs() {
-  const box = document.getElementById("featureGrid");
+function createInputs() {
+  const box = document.getElementById("featuresContainer");
   box.innerHTML = "";
+  Object.entries(FEATURE_GROUPS).forEach(([group, vars]) => {
+    const section = document.createElement("section");
+    section.className = "featureGroup";
+    section.innerHTML = `<h3>${group}</h3><div class="fields"></div>`;
+    const fields = section.querySelector(".fields");
 
-  Object.entries(GROUPS).forEach(([groupName, vars]) => {
-    const group = document.createElement("section");
-    group.className = "featureGroup";
-    group.innerHTML = `<h3>${groupName}</h3><div class="featureInputs"></div>`;
-
-    const inner = group.querySelector(".featureInputs");
     vars.forEach(name => {
       const id = "f_" + cssSafe(name);
       const med = MODEL.medians[name];
-
       const field = document.createElement("div");
       field.className = "field";
       field.innerHTML = `
         <label for="${id}">${name}</label>
         <input id="${id}" type="number" step="any" value="${med}">
-        <small>Mediana usada como valor base: ${num(med, 6)}</small>
+        <small>Base sugerida: mediana del dataset = ${fmt(med, 6)}</small>
       `;
-      inner.appendChild(field);
+      fields.appendChild(field);
     });
 
-    box.appendChild(group);
+    box.appendChild(section);
   });
+}
+
+function useCase(type) {
+  const data = CASES[type];
+  Object.entries(data).forEach(([name, value]) => {
+    const el = document.getElementById("f_" + cssSafe(name));
+    if (el) el.value = value;
+  });
+  refreshCase();
+}
+
+function collectValues() {
+  const values = {};
+  MODEL.features.forEach(name => {
+    const el = document.getElementById("f_" + cssSafe(name));
+    let v = parseFloat(el.value);
+    if (Number.isNaN(v)) {
+      v = MODEL.medians[name];
+      el.value = v;
+    }
+    values[name] = v;
+  });
+  return values;
+}
+
+function computePrediction(values) {
+  let z = MODEL.intercept;
+  const contributions = [];
 
   MODEL.features.forEach(name => {
-    document.getElementById("f_" + cssSafe(name)).addEventListener("input", predict);
+    const scaled = (values[name] - MODEL.means[name]) / MODEL.scales[name];
+    const contribution = MODEL.coef[name] * scaled;
+    z += contribution;
+    contributions.push({
+      name,
+      contribution,
+      direction: contribution >= 0 ? "Aumenta probabilidad" : "Reduce probabilidad"
+    });
+  });
+
+  contributions.sort((a,b) => Math.abs(b.contribution) - Math.abs(a.contribution));
+  const probability = sigmoid(z);
+  return { probability, contributions };
+}
+
+function classify(prob) {
+  const low = MODEL.metrics.threshold_alert;
+  const high = MODEL.metrics.threshold_high;
+  if (prob >= high) {
+    return {
+      zone: "Zona alta",
+      className: "high",
+      label: "Clasificación positiva del modelo",
+      doctorAction: "Priorizar revisión por especialista y valorar estudios adicionales.",
+      decision: "Solicitar evaluación clínica prioritaria y estudios complementarios.",
+      reviewText: "El médico compara la imagen, el expediente y el resultado del modelo para confirmar si el hallazgo es consistente."
+    };
+  }
+  if (prob >= low) {
+    return {
+      zone: "Zona de duda",
+      className: "doubt",
+      label: "Clasificación en zona de incertidumbre",
+      doctorAction: "Enviar a segunda revisión o repetir análisis según criterio clínico.",
+      decision: "Confirmar o descartar con apoyo de especialista y contexto clínico.",
+      reviewText: "El médico interpreta el caso como indeterminado y usa la imagen junto con antecedentes para decidir."
+    };
+  }
+  return {
+    zone: "Zona negativa",
+    className: "negative",
+    label: "Clasificación negativa del modelo",
+    doctorAction: "Mantener flujo de revisión normal y seguimiento según protocolo.",
+    decision: "Confirmar ausencia de señales relevantes o mantener observación.",
+    reviewText: "El médico verifica que la baja probabilidad del modelo sea consistente con la imagen y el historial."
+  };
+}
+
+function renderStep(step) {
+  document.querySelectorAll(".step").forEach((el, idx) => {
+    el.classList.toggle("active", idx <= step);
+  });
+  document.querySelectorAll(".screen").forEach((el, idx) => {
+    el.classList.toggle("active", idx === step);
   });
 }
 
-function predict() {
-  const result = compute();
-  const prob = result.probability;
-  const cls = classify(prob);
-
-  const card = document.getElementById("resultCard");
-  card.className = "resultCard " + cls.className;
-
-  document.getElementById("resultIcon").textContent = cls.icon;
-  document.getElementById("probability").textContent = pct(prob, 2);
-  document.getElementById("resultLabel").textContent = cls.label;
-  document.getElementById("resultZone").textContent = cls.zone;
-  document.getElementById("resultExplanation").textContent = cls.explanation;
-  document.getElementById("brainStatus").textContent = cls.zone;
-  document.getElementById("brainProb").textContent = pct(prob, 1);
-  document.getElementById("gaugeFill").style.width = Math.max(0, Math.min(100, prob * 100)) + "%";
-
-  const brain = document.querySelector(".brain3d");
-  brain.classList.toggle("alert", cls.className === "danger");
-  brain.classList.toggle("doubt", cls.className === "warn");
-
-  renderContributions(result.contributions.slice(0, 6));
+function nextStep() {
+  const current = getCurrentStep();
+  if (current < 5) renderStep(current + 1);
 }
 
-function renderContributions(items) {
-  const box = document.getElementById("contributions");
-  box.innerHTML = "";
+function prevStep() {
+  const current = getCurrentStep();
+  if (current > 0) renderStep(current - 1);
+}
 
+function getCurrentStep() {
+  return [...document.querySelectorAll(".screen")].findIndex(el => el.classList.contains("active"));
+}
+
+function refreshCase() {
+  const values = collectValues();
+  const result = computePrediction(values);
+  const cls = classify(result.probability);
+
+  // Paso 2: extracción
+  document.getElementById("featureCount").textContent = MODEL.metrics.features_count;
+  document.getElementById("extractionSummary").textContent =
+    "Se generaron 16 variables numéricas a partir de la imagen: primer orden, textura y calidad.";
+
+  // Paso 3: modelo IA
+  document.getElementById("modelProb").textContent = pct(result.probability, 2);
+  document.getElementById("modelName").textContent = "Regresión Logística";
+  document.getElementById("modelAuc").textContent = MODEL.metrics.auc.toFixed(6);
+
+  // Paso 4: clasificación
+  const zoneCard = document.getElementById("zoneCard");
+  zoneCard.className = "zoneCard " + cls.className;
+  document.getElementById("zoneName").textContent = cls.zone;
+  document.getElementById("zoneLabel").textContent = cls.label;
+  document.getElementById("zoneThresholds").textContent =
+    `Umbral alerta: ${MODEL.metrics.threshold_alert.toFixed(3)} · Umbral alto: ${MODEL.metrics.threshold_high.toFixed(2)}`;
+  document.getElementById("gaugeFill").style.width = Math.max(0, Math.min(100, result.probability * 100)) + "%";
+
+  // Paso 5: médico revisa
+  document.getElementById("doctorReview").textContent = cls.reviewText;
+  document.getElementById("doctorAction").textContent = cls.doctorAction;
+  renderContribs(result.contributions.slice(0, 5));
+
+  // Paso 6: decisión clínica
+  document.getElementById("clinicalDecision").textContent = cls.decision;
+  document.getElementById("finalProb").textContent = pct(result.probability, 2);
+  document.getElementById("finalZone").textContent = cls.zone;
+  document.getElementById("finalMessage").textContent =
+    "El sistema apoya la decisión, pero el diagnóstico final siempre queda en manos del médico.";
+
+  // Header HUD
+  document.getElementById("heroProb").textContent = pct(result.probability, 1);
+  document.getElementById("heroZone").textContent = cls.zone;
+}
+
+function renderContribs(items) {
+  const box = document.getElementById("contribs");
+  box.innerHTML = "";
   items.forEach(item => {
-    const row = document.createElement("div");
-    row.className = "contribution";
     const w = Math.min(100, Math.abs(item.contribution) * 18);
-    row.innerHTML = `
-      <div class="contributionTop">
+    const div = document.createElement("div");
+    div.className = "contrib";
+    div.innerHTML = `
+      <div class="contribTop">
         <strong>${item.name}</strong>
         <span>${item.direction}</span>
       </div>
       <div class="bar"><i style="width:${w}%"></i></div>
       <small>Aporte estandarizado: ${item.contribution.toFixed(4)}</small>
     `;
-    box.appendChild(row);
+    box.appendChild(div);
   });
 }
 
-function setExample(type) {
-  const examples = {
-    median: MODEL.medians,
-    high: {
-      media: 234.485168, varianza: 253.898563, "desviacion.estandar": 503.883481,
-      entropia: 0.651174, asimetria: 198.420231, kurtosis: 542.104152,
-      contraste: 181.467713, energia: 0.781557, asm: 0.610831,
-      homogeneidad: 0.847033, disiminitud: 276.541144, correlacion: 0.968576,
-      psnr: 979.746298, ssim: 0.777011, mse: 0.171163, dc: 0.303989
-    },
-    doubt: {
-      media: 145, varianza: 170, "desviacion.estandar": 290,
-      entropia: 0.74, asimetria: 150, kurtosis: 260, contraste: 140,
-      energia: 0.88, asm: 0.77, homogeneidad: 0.91, disiminitud: 38,
-      correlacion: 0.94, psnr: 820, ssim: 0.91, mse: 0.08, dc: 0.51
-    },
-    low: {
-      media: 85, varianza: 105, "desviacion.estandar": 185,
-      entropia: 0.88, asimetria: 130, kurtosis: 155, contraste: 115,
-      energia: 0.98, asm: 0.96, homogeneidad: 0.99, disiminitud: 0.35,
-      correlacion: 0.91, psnr: 720, ssim: 0.98, mse: 0.02, dc: 0.72
-    }
-  };
-
-  Object.entries(examples[type]).forEach(([name, value]) => {
-    const el = document.getElementById("f_" + cssSafe(name));
-    if (el) el.value = value;
-  });
-
-  predict();
-}
-
-function paintMetrics() {
+function fillMetrics() {
   const m = MODEL.metrics;
-
-  document.getElementById("kpiRows").textContent = m.imagenes_procesadas;
-  document.getElementById("kpiVars").textContent = m.variables_predictoras;
-  document.getElementById("kpiAuc").textContent = m.auc.toFixed(6);
-  document.getElementById("kpiRecall").textContent = pct(m.recall, 1);
-  document.getElementById("kpiAcc").textContent = pct(m.accuracy, 1);
-  document.getElementById("kpiF1").textContent = pct(m.f1, 1);
-
-  document.getElementById("distText").textContent =
-    `Tumor=${m.tumor} (${m.pct_tumor}%) · No-Tumor=${m.no_tumor} (${m.pct_no_tumor}%) · Ratio ${m.ratio}:1`;
-
-  document.getElementById("cm050").innerHTML = matrixHTML(m.cm_050);
-  document.getElementById("cmOpt").innerHTML = matrixHTML(m.cm_opt);
-
-  document.getElementById("thresholdText").textContent = m.umbral_optimo.toFixed(3);
-  document.getElementById("thresholdHighText").textContent = m.umbral_alto.toFixed(2);
-  document.getElementById("zoneHigh").textContent = m.zonas["Zona alta del modelo"];
-  document.getElementById("zoneDoubt").textContent = m.zonas["Zona de duda"];
-  document.getElementById("zoneNegative").textContent = m.zonas["Zona negativa"];
-
-  document.getElementById("cleanMulti").textContent = `${m.limpieza.multipunto.toLocaleString("es-CR")} (${m.limpieza.multipunto_pct}%)`;
-  document.getElementById("cleanGarbage").textContent = m.limpieza.texto_basura;
-  document.getElementById("cleanCorr").textContent = m.limpieza.correlacion_imposible;
-  document.getElementById("cleanEmpty").textContent = m.limpieza.celdas_vacias;
-  document.getElementById("cleanRows").textContent = m.limpieza.filas_diagnostico_vacio_eliminadas;
-  document.getElementById("cleanNan").textContent = m.limpieza.nan_final;
-
-  renderImportance();
+  document.getElementById("mAccuracy").textContent = pct(m.accuracy, 2);
+  document.getElementById("mPrecision").textContent = pct(m.precision, 2);
+  document.getElementById("mRecall").textContent = pct(m.recall, 2);
+  document.getElementById("mF1").textContent = pct(m.f1, 2);
+  document.getElementById("mAuc").textContent = m.auc.toFixed(6);
+  document.getElementById("mRows").textContent = m.records;
+  document.getElementById("mClasses").textContent = `${m.tumor} tumor / ${m.no_tumor} no tumor`;
+  document.getElementById("mConf50").innerHTML = matrixHTML(m.cm_std);
+  document.getElementById("mConfOpt").innerHTML = matrixHTML(m.cm_opt);
 }
 
 function matrixHTML(cm) {
@@ -456,44 +367,16 @@ function matrixHTML(cm) {
   `;
 }
 
-function renderImportance() {
-  const box = document.getElementById("importanceList");
-  box.innerHTML = "";
-
-  const max = MODEL.importance[0].abs;
-  MODEL.importance.slice(0, 10).forEach((item, idx) => {
-    const row = document.createElement("div");
-    row.className = "importance";
-    row.innerHTML = `
-      <span class="rank">${idx + 1}</span>
-      <div class="importanceBody">
-        <div class="importanceTop"><strong>${item.feature}</strong><span>${item.coef.toFixed(4)}</span></div>
-        <div class="bar"><i style="width:${(item.abs / max) * 100}%"></i></div>
-      </div>
-    `;
-    box.appendChild(row);
-  });
-}
-
-function switchTab(tab) {
-  document.querySelectorAll(".tab").forEach(el => el.classList.remove("active"));
-  document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
-  document.getElementById("tab_" + tab).classList.add("active");
-  document.getElementById("view_" + tab).classList.add("active");
-}
-
-function togglePresentation() {
-  document.body.classList.toggle("presentation");
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  renderInputs();
-  paintMetrics();
-  predict();
+  createInputs();
+  fillMetrics();
+  renderStep(0);
+  useCase("duda");
 
-  document.getElementById("btnMedian").addEventListener("click", () => setExample("median"));
-  document.getElementById("btnHigh").addEventListener("click", () => setExample("high"));
-  document.getElementById("btnDoubt").addEventListener("click", () => setExample("doubt"));
-  document.getElementById("btnLow").addEventListener("click", () => setExample("low"));
-  document.getElementById("presentationBtn").addEventListener("click", togglePresentation);
+  document.getElementById("btnNeg").addEventListener("click", () => useCase("negativo"));
+  document.getElementById("btnDoubt").addEventListener("click", () => useCase("duda"));
+  document.getElementById("btnHigh").addEventListener("click", () => useCase("alta"));
+  document.getElementById("btnRefresh").addEventListener("click", refreshCase);
+  document.getElementById("btnNext").addEventListener("click", nextStep);
+  document.getElementById("btnPrev").addEventListener("click", prevStep);
 });
