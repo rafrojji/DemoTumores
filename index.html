@@ -1,132 +1,196 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Demo IA - DAAAAAAAetección de Tumores Cerebrales</title>
+  <title>NeuroScan Grupo 4 · Demo fusionado</title>
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+  <header class="topbar">
+    <div class="brand"><span class="logo"></span> NeuroScan Grupo 4</div>
+    <nav class="nav">
+      <button id="tab_demo" class="tab active" onclick="switchTab('demo')">Demo IA</button>
+      <button id="tab_modelo" class="tab" onclick="switchTab('modelo')">Modelo</button>
+      <button id="tab_crisp" class="tab" onclick="switchTab('crisp')">CRISP-DM</button>
+      <button id="presentationBtn">Modo presentación</button>
+    </nav>
+  </header>
+
   <section class="hero">
     <div>
-      <span class="badge">Grupo 4 · Inteligencia Artificial Empresarial</span>
-      <h1>Demo interactivo de clasificación de tumores cerebrales</h1>
-      <p>
-        Prototipo académico basado en Regresión Logística para mostrar cómo un modelo de Machine Learning
-        supervisado puede clasificar registros como <strong>tumor</strong> o <strong>no tumor</strong> a partir de
-        características numéricas extraídas de imágenes.
+      <span class="badge">Trabajo final · IA Empresarial · Tecnológico de Costa Rica</span>
+      <h1>Prototipo académico de clasificación de tumores cerebrales</h1>
+      <p class="lead">
+        Demo fusionado con diseño médico/IA, simulador interactivo y resultados reales del notebook en Python.
+        El modelo usado es Regresión Logística para clasificación binaria supervisada.
       </p>
+      <div class="heroActions">
+        <button class="btn" onclick="document.getElementById('demoSection').scrollIntoView()">Probar simulador</button>
+        <button class="btn secondary" onclick="switchTab('modelo')">Ver métricas reales</button>
+      </div>
       <p class="note">
-        Aviso: este demo es educativo. No debe interpretarse como diagnóstico médico ni sustituye criterio clínico profesional.
+        Aviso académico: este demo no es diagnóstico médico. No analiza imágenes directamente.
+        Trabaja con variables numéricas previamente extraídas y reproduce los resultados del proyecto en Python.
       </p>
     </div>
-    <div class="hero-card">
-      <p>AUC del modelo</p>
-      <div class="metric-big" id="auc">--</div>
-      <p>
-        El AUC resume la capacidad del modelo para distinguir entre clases. Valores cercanos a 1 indican mejor separación.
-      </p>
+
+    <div class="visual">
+      <div class="scan"></div>
+      <div class="brain3d">
+        <div class="orbit o1"><span class="node n1"></span><span class="node n2"></span></div>
+        <div class="orbit o2"><span class="node n3"></span></div>
+        <div class="orbit o3"><span class="node n4"></span></div>
+        <div class="brainCore"></div>
+      </div>
+      <div class="hud">
+        <div class="hudCard"><span>Zona del modelo</span><strong id="brainStatus">--</strong></div>
+        <div class="hudCard"><span>Probabilidad</span><strong id="brainProb">--</strong></div>
+        <div class="hudCard"><span>AUC real</span><strong>0.9784</strong></div>
+      </div>
     </div>
   </section>
 
   <main>
-    <section class="cards">
-      <div class="card">
-        Registros válidos
-        <strong id="records">--</strong>
-      </div>
-      <div class="card">
-        Variables predictoras
-        <strong id="featuresCount">--</strong>
-      </div>
-      <div class="card">
-        Distribución
-        <strong id="classDist">--</strong>
-      </div>
-      <div class="card">
-        Accuracy
-        <strong id="accuracy">--</strong>
-      </div>
-    </section>
+    <section id="view_demo" class="view active">
+      <section class="section" id="demoSection">
+        <div class="grid2">
+          <div class="panel">
+            <h2>Simulador interactivo</h2>
+            <p>
+              Use los valores base o pruebe escenarios. El cálculo utiliza los coeficientes reales de la
+              Regresión Logística entrenada en Python con <code>class_weight="balanced"</code>.
+            </p>
 
-    <section class="demo-grid">
-      <div class="panel">
-        <h2>Simulador de predicción</h2>
-        <p>
-          Modifique los valores de las variables o use los botones de ejemplo. El cálculo usa los coeficientes
-          del modelo entrenado con el dataset corregido.
-        </p>
-        <div id="featureGrid" class="feature-grid"></div>
-        <div class="actions">
-          <button id="predictBtn">Calcular predicción</button>
-          <button id="resetBtn" class="secondary">Usar medianas</button>
-          <button id="tumorExample" class="danger">Ejemplo tumor</button>
-          <button id="notumorExample" class="warning">Ejemplo no tumor</button>
+            <div class="actions">
+              <button class="btn secondary" id="btnMedian">Usar medianas</button>
+              <button class="btn danger" id="btnHigh">Ejemplo zona alta</button>
+              <button class="btn warn" id="btnDoubt">Ejemplo zona de duda</button>
+              <button class="btn secondary" id="btnLow">Ejemplo zona negativa</button>
+            </div>
+
+            <div id="featureGrid"></div>
+          </div>
+
+          <aside class="resultCard" id="resultCard">
+            <span class="resultIcon" id="resultIcon">--</span>
+            <h2>Resultado del modelo</h2>
+            <div class="probability" id="probability">--</div>
+            <h3 id="resultLabel">--</h3>
+            <strong id="resultZone">--</strong>
+            <div class="gauge"><i id="gaugeFill"></i></div>
+            <p id="resultExplanation">--</p>
+            <p class="note">
+              Umbral de alerta del notebook: <strong>0.212</strong>. Umbral alto usado para zona superior: <strong>0.70</strong>.
+            </p>
+
+            <h3>Variables que más movieron esta predicción</h3>
+            <div id="contributions"></div>
+          </aside>
         </div>
-      </div>
+      </section>
+    </section>
 
-      <aside id="resultCard" class="result-card">
-        <h2>Resultado</h2>
-        <p>Probabilidad estimada de tumor</p>
-        <div class="prob" id="probability">--</div>
-        <div class="pred" id="prediction">--</div>
-        <p id="risk">--</p>
+    <section id="view_modelo" class="view">
+      <section class="section">
+        <div class="panel">
+          <h2>Resultados reales del notebook Python</h2>
+          <p class="lead">Estos datos salen del código final: limpieza, entrenamiento, evaluación y ajuste de umbral.</p>
 
-        <div class="slider-wrap">
-          <label for="threshold">Umbral de decisión: <strong id="thresholdValue">0.50</strong></label>
-          <input id="threshold" type="range" min="0.05" max="0.95" step="0.01" value="0.50">
+          <div class="kpis">
+            <div class="kpi"><span>Imágenes procesadas</span><strong id="kpiRows">--</strong></div>
+            <div class="kpi"><span>Variables predictoras</span><strong id="kpiVars">--</strong></div>
+            <div class="kpi"><span>AUC-ROC</span><strong id="kpiAuc">--</strong></div>
+            <div class="kpi"><span>Recall</span><strong id="kpiRecall">--</strong></div>
+            <div class="kpi"><span>Accuracy</span><strong id="kpiAcc">--</strong></div>
+            <div class="kpi"><span>F1-score</span><strong id="kpiF1">--</strong></div>
+          </div>
+
+          <p id="distText" class="note"></p>
+
+          <div class="matrixWrap">
+            <div>
+              <h3>Matriz de confusión · umbral 0.50</h3>
+              <div id="cm050"></div>
+            </div>
+            <div>
+              <h3>Matriz de confusión · umbral ajustado <span id="thresholdText">--</span></h3>
+              <div id="cmOpt"></div>
+            </div>
+          </div>
+
+          <p class="note">
+            Hallazgo defendible: el ajuste del umbral reduce los falsos negativos de 11 a 6,
+            manteniendo 1 falso positivo. En un contexto de análisis sensible, el falso negativo es el error más crítico.
+          </p>
         </div>
+      </section>
 
-        <p>
-          En problemas médicos, el umbral puede ajustarse para reducir falsos negativos, aunque eso puede aumentar falsos positivos.
-        </p>
-      </aside>
+      <section class="section">
+        <div class="grid2">
+          <div class="panel">
+            <h2>Sistema de tres zonas del notebook</h2>
+            <p>
+              El notebook no se queda solo con 0/1. También propone una zona de advertencia:
+              bajo <strong id="thresholdText2">0.212</strong>, zona de duda y zona alta desde <strong id="thresholdHighText">0.70</strong>.
+            </p>
+            <div class="zones">
+              <div class="zone"><strong class="good" id="zoneNegative">--</strong><span>Zona negativa</span></div>
+              <div class="zone"><strong class="warn" id="zoneDoubt">--</strong><span>Zona de duda</span></div>
+              <div class="zone"><strong class="bad" id="zoneHigh">--</strong><span>Zona alta del modelo</span></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Importancia de variables</h2>
+            <p>
+              Ranking calculado con el valor absoluto de los coeficientes reales de la Regresión Logística.
+            </p>
+            <div id="importanceList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel">
+          <h2>Limpieza de datos demostrada</h2>
+          <p>Estos son los problemas corregidos reportados en el resumen ejecutivo del notebook.</p>
+          <div class="cleanGrid">
+            <div class="cleanItem"><span>Valores multi-punto corregidos</span><strong id="cleanMulti">--</strong></div>
+            <div class="cleanItem"><span>Texto basura imputado</span><strong id="cleanGarbage">--</strong></div>
+            <div class="cleanItem"><span>Correlaciones imposibles corregidas</span><strong id="cleanCorr">--</strong></div>
+            <div class="cleanItem"><span>Celdas vacías imputadas</span><strong id="cleanEmpty">--</strong></div>
+            <div class="cleanItem"><span>Filas sin diagnóstico eliminadas</span><strong id="cleanRows">--</strong></div>
+            <div class="cleanItem"><span>NaN finales</span><strong id="cleanNan">--</strong></div>
+          </div>
+        </div>
+      </section>
     </section>
 
-    <section class="panel">
-      <h2>Métricas principales</h2>
-      <div class="cards">
-        <div class="card">Recall tumor<strong id="recall">--</strong></div>
-        <div class="card">F1-score tumor<strong id="f1">--</strong></div>
-        <div class="card">Umbral estándar<strong>0.50</strong></div>
-        <div class="card">Umbral ajustado<strong id="adjThresholdText">--</strong></div>
-      </div>
+    <section id="view_crisp" class="view">
+      <section class="section">
+        <div class="panel">
+          <h2>Metodología CRISP-DM aplicada</h2>
+          <div class="pipeline">
+            <div class="step"><b>1</b><strong>Negocio</strong><p>Apoyar la explicación de clasificación Tumor / No-Tumor como caso académico de IA empresarial.</p></div>
+            <div class="step"><b>2</b><strong>Datos</strong><p>Dataset de 1.275 filas y 18 columnas; luego de limpieza quedan 1.273 registros válidos.</p></div>
+            <div class="step"><b>3</b><strong>Preparación</strong><p>Conversión de object a float, corrección multi-punto, imputación por mediana y eliminación de tipo vacío.</p></div>
+            <div class="step"><b>4</b><strong>Modelo</strong><p>Regresión Logística con datos escalados y class_weight="balanced".</p></div>
+            <div class="step"><b>5</b><strong>Evaluación</strong><p>Matriz de confusión, accuracy, precision, recall, F1-score, AUC-ROC y ajuste de umbral.</p></div>
+          </div>
+
+          <p class="note">
+            Mensaje para exposición: “El valor del proyecto no está solo en entrenar un modelo,
+            sino en limpiar datos defectuosos, interpretar métricas y convertir la probabilidad en una decisión explicable.”
+          </p>
+        </div>
+      </section>
     </section>
-
-    <section class="demo-grid">
-      <div class="panel">
-        <h2>Matriz de confusión · Umbral 0.50</h2>
-        <table class="matrix">
-          <tr><th></th><th>Pred. No tumor</th><th>Pred. Tumor</th></tr>
-          <tr><th>Real No tumor</th><td id="tn050">--</td><td id="fp050">--</td></tr>
-          <tr><th>Real Tumor</th><td id="fn050">--</td><td id="tp050">--</td></tr>
-        </table>
-      </div>
-
-      <div class="panel">
-        <h2>Matriz de confusión · Umbral ajustado</h2>
-        <table class="matrix">
-          <tr><th></th><th>Pred. No tumor</th><th>Pred. Tumor</th></tr>
-          <tr><th>Real No tumor</th><td id="tnAdj">--</td><td id="fpAdj">--</td></tr>
-          <tr><th>Real Tumor</th><td id="fnAdj">--</td><td id="tpAdj">--</td></tr>
-        </table>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Mensaje ejecutivo para la presentación</h2>
-      <p>
-        Este prototipo permite explicar que el valor del modelo no está solamente en su exactitud,
-        sino en la interpretación de sus errores. En un contexto médico, los falsos negativos son críticos,
-        porque representan casos de tumor que podrían clasificarse como no tumor. Por eso se muestra el ajuste
-        del umbral como una decisión de negocio y riesgo, no solo como una decisión matemática.
-      </p>
-    </section>
-
-    <div class="footer">
-      Proyecto académico · Tecnológico de Costa Rica · Módulo III Aplicaciones de Inteligencia Artificial Empresarial.
-    </div>
   </main>
+
+  <footer class="footer">
+    Grupo 4 · Trabajo final académico · Módulo III Aplicaciones de Inteligencia Artificial Empresarial · No corresponde a diagnóstico médico real.
+  </footer>
 
   <script src="app.js"></script>
 </body>
